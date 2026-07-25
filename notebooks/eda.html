@@ -1,0 +1,257 @@
+# %% [markdown]
+# 1.Exploratory Data Analysis
+# 
+# Vehicle Valuation and Depreciation Intelligence Platform
+# 
+# Objective
+# 
+# The objective of this notebook is to explore the used vehicle dataset, assess data quality, identify potential issues, and understand the relationships between vehicle characteristics and listing price before feature engineering and model development.
+
+# %% [markdown]
+# 2. Business Questions
+# 
+# - Which vehicle characteristics are most strongly associated with vehicle price?
+# - How do mileage, age, horsepower, accident history and ownership history influence price?
+# - Can these characteristics be used to build a multiple linear regression model for estimating vehicle value?
+# - Can the model identify vehicles that appear underpriced or overpriced relative to similar vehicles?
+
+# %%
+import pandas as pd
+from matplotlib import pyplot as plt 
+import seaborn as sns
+from pathlib import Path
+FIGURES_DIR = Path("../reports/figures/Eda_plots")
+df = pd.read_csv("../data/processed/used_cars_reduced.csv")
+pd.set_option("display.float_format", "{:,.2f}".format)
+df.drop_duplicates(inplace = True)
+df = df.reset_index()
+
+# %%
+df
+
+
+# %% [markdown]
+# 3. Initial inspections
+
+# %%
+df.shape
+
+# %%
+df.head()
+
+# %%
+df.info()
+
+# %%
+df.tail()
+
+
+# %%
+df.dtypes
+
+# %%
+df.columns
+
+# %%
+df.describe()
+
+# %%
+df.drop("vehicle_damage_category", axis=1, inplace=True)
+
+# %% [markdown]
+# 4.Categorizing Columns
+
+# %%
+numerical_data = df.select_dtypes(include=["number"]).columns.tolist()
+categorical_data = df.select_dtypes(include=["object", "string", "bool"]).columns.tolist()
+
+# %% [markdown]
+# Initial Data Quality Findings and add:
+# 
+# 1.Duplicate records were identified and were removed before modelling. 
+# 2. Remove vehicle_damage_category (100% missing).
+# 3.Investigate or treat implausible mileage values (>1,000,000).
+# 4.Investigate missing values in frame_damaged, has_accidents, salvage, and owner_count.
+# 5.Does dealer_zip add meaningful information beyond city, or is it mostly redundant?
+# are engine cylinder matching engine-type?
+# 6.Later, during feature engineering, ill group infrequent trims because thousands of unique categories can be difficult for a simple linear regression model.
+# 7.engine_cylinders contains identical information to engine_type and will be removed during feature engineering.
+# 8.
+
+# %%
+df[numerical_data].describe()
+
+# %%
+df[df["mileage"] == df["mileage"].max()]
+
+# %%
+#Several extremely large mileage values (e.g., 1,111,111 and 99,999,988) appear to be placeholder or #
+#erroneous values rather than genuine odometer readings. 
+#Further investigation or consultation of the dataset documentation is recommended before deciding how to treat these records.
+df[df["mileage"] > 1_000_000]
+
+# %% [markdown]
+# Seven records contain implausibly large mileage values (>1,000,000). Several share identical values (e.g., 1,111,111), suggesting placeholder or erroneous entries rather than genuine odometer readings. These records will require special treatment during data cleaning.
+
+# %% [markdown]
+# 5. Owner Count Investigation
+
+# %%
+df[df["owner_count"]  > 10]
+
+# %% [markdown]
+# Owner count exhibits a negative association with vehicle price and a positive association with mileage. Vehicles with more previous owners also tend to be older, suggesting that owner count is correlated with both vehicle age and usage. The feature appears informative and will be retained for model training, while recognizing that its effect may overlap with other predictors such as year and mileage.
+
+# %%
+df["owner_count"].value_counts().sort_index()
+
+# %%
+df["owner_count"].isna().sum()
+
+# %%
+df[df["owner_count"] == 19]
+
+# %%
+df.groupby("owner_count")["price"].mean()
+
+# %%
+df.groupby("owner_count")["mileage"].mean()
+
+# %%
+df.groupby("owner_count")["year"].mean()
+
+# %% [markdown]
+# 6. Correlation Analysis
+
+# %%
+#Horsepower exhibits the strongest positive linear relationship with price, while mileage and owner count show negative relationships.
+# These variables are likely to be informative predictors during model training.
+df[numerical_data].corr()
+
+
+# %%
+df[numerical_data].skew()
+
+# %%
+df[categorical_data].describe()
+
+# %% [markdown]
+# engine_type and engine_cylinders contain identical information, including matching missing values (.equals() returned True). Therefore, engine_cylinders is redundant and can be removed during feature engineering to eliminate duplicate information.
+
+# %% [markdown]
+# 7. Redundant Feature Investigation
+
+# %%
+(df["engine_type"] == df["engine_cylinders"]).all()
+
+# %%
+df[df["engine_type"] != df["engine_cylinders"]]
+
+# %%
+df["engine_type"].equals (df["engine_cylinders"])
+
+# %%
+df['salvage']
+
+# %%
+df["salvage"].value_counts(dropna=False)
+
+# %%
+df.groupby("salvage")["price"].mean()
+
+# %%
+df.groupby("has_accidents")["price"].mean()
+
+# %%
+df["has_accidents"].value_counts(dropna=False)
+
+# %% [markdown]
+# 9. Exploratory Data Analysis Summary
+# 
+#  Key Findings
+# 
+# - Duplicate records were removed.
+# - vehicle_damage_category contains only missing values.
+# - engine_type and engine_cylinders are redundant.
+# - Mileage contains several implausible values requiring treatment.
+# - Horsepower shows the strongest positive relationship with price.
+# - Mileage and owner count are negatively associated with price.
+# - Salvage vehicles and vehicles with accident histories tend to have lower prices.
+# 
+#  Implications for Feature Engineering
+# 
+# - Remove redundant features.
+# - Handle missing values.
+# - Address implausible mileage observations.
+# - Encode categorical variables.
+# - Prepare numerical variables for multiple linear regression.
+
+# %% [markdown]
+# PLOT VISUALISATIONS
+
+# %%
+numerical_data
+
+
+# %%
+numerical_data.remove('index')
+
+# %%
+numerical_data
+
+# %%
+features = [col for col in numerical_data if col != "price"]
+
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+axes = axes.flatten()
+
+for i, feature in enumerate(features):
+    sns.scatterplot(
+        data=df,
+        x=feature,
+        y="price",
+        alpha=0.3,
+        ax=axes[i]
+    )
+for i in range(len(features), len(axes)):
+    fig.delaxes(axes[i])
+    axes[i].set_title(f"Price vs {feature.replace('_', ' ').title()}")
+
+# %%
+plt.figure(figsize=(10, 3))
+
+sns.boxplot(
+    data=df,
+    x="mileage"
+)
+
+plt.xscale("log")
+
+plt.title("Mileage Distribution with Outliers (Log Scale)")
+plt.xlabel("Mileage (Log Scale)")
+
+plt.tight_layout()
+plt.savefig("../reports/figures/Eda_plots/mileage_boxplot.png")
+plt.show()
+
+# %% [markdown]
+# Relationship Between Numerical Features and Vehicle Price As well as Mileage Distribution with Outliers
+# 
+# Vehicle price increases with newer model years.
+# Higher horsepower generally corresponds to higher prices.
+# Higher mileage is associated with lower prices.
+# Vehicles with more previous owners tend to be cheaper.
+# Mileage contains significant outliers that require cleaning before modeling.
+# 
+# The box plot reveals several extreme mileage observations. Most vehicles have mileage within a relatively narrow range, while a small number of records contain exceptionally large values (including implausible values exceeding one million miles). These observations warrant further investigation before model training.
+# 
+
+# %%
+df.columns
+
+
+
+# %%
+
+
+
