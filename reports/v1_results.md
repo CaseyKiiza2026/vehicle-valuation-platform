@@ -41,7 +41,13 @@ The test set was held out from model development and used for final V1 evaluatio
 
 ![Predicted vs Actual](figures/predicted_vs_actual_v1.png)
 
-![feature_importance_v1](figures/feature_importance_v1.png)
+## Feature Importance
+
+The final LightGBM model relied most heavily on vehicle identity and specification
+features, particularly trim, model, horsepower, make, year, and mileage.
+
+![V1 Feature Importance](figures/feature_importance_v1.png)
+
 
 ## Error Analysis
 
