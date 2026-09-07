@@ -133,7 +133,7 @@ Large datasets and generated feature matrices are excluded from Git, while the t
 
 ## Next Steps
 
-* Add more exotic, classic, luxury, and high-value vehicle data.
+* Add more exotic, classic, luxury, and high value vehicle data.
 * Expand the supported range toward $2 million.
 * Improve support for simple user inputs and missing information.
 * Add prediction ranges or uncertainty estimates.

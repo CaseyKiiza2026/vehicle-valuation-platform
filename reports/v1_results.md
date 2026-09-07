@@ -57,7 +57,7 @@ The highest price bands contained substantially fewer observations than the
 dominant used vehicle price range, resulting in larger errors for high value
 vehicles.
 
-V1 therefore performs most reliably across the well-represented portion of its
+V1 therefore performs most reliably across the well represented portion of its
 supported market, while high value vehicles remain an area for future data
 enrichment and model development.
 
