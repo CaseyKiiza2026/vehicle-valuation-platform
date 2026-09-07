@@ -53,14 +53,14 @@ Instead of claiming reliable performance across every vehicle price, I defined V
 
 ## Progress From the Initial Baseline
 
-The first Linear Regression baseline showed that the vehicle features contained useful pricing information, but error analysis exposed data-quality problems and model limitations. After improving the data preparation, preserving important vehicle identity features, defining the V1 price range, and selecting LightGBM, validation performance improved significantly.
+The first Linear Regression baseline showed that the vehicle features contained useful pricing information, but error analysis exposed data quality problems and model limitations. After improving the data preparation, preserving important vehicle identity features, defining the V1 price range, and selecting LightGBM, validation performance improved significantly.
 
 | Stage            | Model             | Validation MAE | Validation RMSE | Validation R² |
 | ---------------- | ----------------- | -------------: | --------------: | ------------: |
 | Initial baseline | Linear Regression |         $3,019 |          $5,356 |         0.922 |
 | Final V1         | LightGBM          |         $2,380 |          $3,660 |         0.957 |
 
-Compared with the initial baseline, the complete V1 pipeline reduced validation MAE by approximately **21%** and validation RMSE by approximately **32%**. This improvement reflects the combined effect of better data preparation, feature decisions, a defined operating range, and the final model—not LightGBM alone.
+Compared with the initial baseline, the complete V1 pipeline reduced validation MAE by approximately **21%** and validation RMSE by approximately **32%**. This improvement reflects the combined effect of better data preparation, feature decisions, a defined operating range, and the final model not LightGBM alone.
 
 ## Model Comparison
 
