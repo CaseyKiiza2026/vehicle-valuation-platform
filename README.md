@@ -29,7 +29,9 @@ An end to end machine learning project that estimates advertised vehicle prices 
 
 ## Project Approach
 
-The project began with a Kaggle vehicle listings dataset. Exploratory data analysis found missing values, duplicate records, unrealistic mileage, inconsistent condition reporting, and suspicious prices.
+The original dataset link [US Used Cars Dataset](https://www.kaggle.com/datasets/ananaymital/us-used-cars-dataset/data) from Kaggle.
+
+The project began with a Kaggle vehicle listings dataset. Exploratory data analysis found missing values, duplicate records, unrealistic mileage, inconsistent condition reporting, and suspicious prices. 
 
 The main data and modeling decisions were:
 
