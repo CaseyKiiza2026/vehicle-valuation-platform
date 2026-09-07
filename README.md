@@ -1,6 +1,6 @@
 # Vehicle Valuation Platform
 
-An end-to-end machine-learning project that estimates advertised vehicle prices from vehicle identity, specifications, condition, usage, and location data.
+An end to end machine learning project that estimates advertised vehicle prices from vehicle identity, specifications, condition, usage, and location data.
 
 ## V1 Summary
 
@@ -17,7 +17,7 @@ An end-to-end machine-learning project that estimates advertised vehicle prices 
 
 ## Technologies Used
 
-| AreaTechnologies |                                 |
+| Area             |   Technologies                  |
 | ---------------- | ------------------------------- |
 | Data processing  | Python, pandas, NumPy           |
 | Modeling         | scikit-learn, LightGBM, XGBoost |
@@ -29,7 +29,7 @@ An end-to-end machine-learning project that estimates advertised vehicle prices 
 
 ## Project Approach
 
-The project began with a Kaggle vehicle-listings dataset. Exploratory data analysis found missing values, duplicate records, unrealistic mileage, inconsistent condition reporting, and suspicious prices.
+The project began with a Kaggle vehicle listings dataset. Exploratory data analysis found missing values, duplicate records, unrealistic mileage, inconsistent condition reporting, and suspicious prices.
 
 The main data and modeling decisions were:
 
@@ -47,9 +47,20 @@ The final inputs include make, model, trim, year, mileage, horsepower, engine ty
 
 ## Why V1 Has a Defined Price Range
 
-Error analysis showed that prediction errors increased for expensive vehicles because the dataset contained fewer high-value examples. For example, only 291 validation listings were available in the $150,000–$200,000 price band.
+Error analysis showed that prediction errors increased for expensive vehicles because the dataset contained fewer high value examples. For example, only 291 validation listings were available in the $150,000–$200,000 price band.
 
-Instead of claiming reliable performance across every vehicle price, I defined V1 around a supported range of **$1,000–$200,000**. V2 will focus on adding more high-value vehicle data and expanding coverage toward $2 million.
+Instead of claiming reliable performance across every vehicle price, I defined V1 around a supported range of **$1,000–$200,000**. V2 will focus on adding more high value vehicle data and expanding coverage toward $2 million.
+
+## Progress From the Initial Baseline
+
+The first Linear Regression baseline showed that the vehicle features contained useful pricing information, but error analysis exposed data-quality problems and model limitations. After improving the data preparation, preserving important vehicle identity features, defining the V1 price range, and selecting LightGBM, validation performance improved significantly.
+
+| Stage            | Model             | Validation MAE | Validation RMSE | Validation R² |
+| ---------------- | ----------------- | -------------: | --------------: | ------------: |
+| Initial baseline | Linear Regression |         $3,019 |          $5,356 |         0.922 |
+| Final V1         | LightGBM          |         $2,380 |          $3,660 |         0.957 |
+
+Compared with the initial baseline, the complete V1 pipeline reduced validation MAE by approximately **21%** and validation RMSE by approximately **32%**. This improvement reflects the combined effect of better data preparation, feature decisions, a defined operating range, and the final model—not LightGBM alone.
 
 ## Model Comparison
 
