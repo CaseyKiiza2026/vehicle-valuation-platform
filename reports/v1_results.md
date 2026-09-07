@@ -54,11 +54,11 @@ features, particularly trim, model, horsepower, make, year, and mileage.
 Performance degraded as vehicle price increased.
 
 The highest price bands contained substantially fewer observations than the
-dominant used-vehicle price range, resulting in larger errors for high-value
+dominant used vehicle price range, resulting in larger errors for high value
 vehicles.
 
 V1 therefore performs most reliably across the well-represented portion of its
-supported market, while high-value vehicles remain an area for future data
+supported market, while high value vehicles remain an area for future data
 enrichment and model development.
 
 ![Error by Price Band](figures/price_band_error_v1.png)
