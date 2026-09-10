@@ -15,6 +15,22 @@ An end to end machine learning project that estimates advertised vehicle prices 
 | Test RMSE             |                        $3,685 |
 | Test R²               |                         0.956 |
 
+## Live API
+
+The frozen V1 model is served through FastAPI, packaged with Docker, and deployed on Amazon ECS.
+
+**[Open the live prediction API](https://ve-243aeac9ad8141ecaa6bd9ae8ed5af86.ecs.us-east-2.on.aws/docs)**
+
+### Test a Prediction
+
+1. Open `POST /predict`.
+2. Click **Try it out**.
+3. Copy any vehicle from [Test Examples](Test_examples/demo_examples.md).
+4. Paste the JSON into the request body and click **Execute**.
+5. Compare the prediction with the actual advertised price shown in the examples.
+
+See [DOCKER.md](DOCKER.md) for the API and container deployment details.
+
 ## Technologies Used
 
 | Area             |   Technologies                  |
@@ -24,8 +40,11 @@ An end to end machine learning project that estimates advertised vehicle prices 
 | Analysis         | Jupyter Notebook, Matplotlib    |
 | Model packaging  | Joblib                          |
 | Version control  | Git, GitHub                     |
+| API              | FastAPI, Uvicorn                |
+| Containerization | Docker                          |
+| Deployment       | Amazon ECR, Amazon ECS          |
 
-**Status:** V1 modeling and inference packaging are complete. The model and results are frozen, and no further tuning will be performed using the V1 test results.
+ **Status:** V1 modeling, inference packaging, API development, containerization, and AWS deployment are complete. The model and results are frozen.
 
 ## Project Approach
 
@@ -86,26 +105,6 @@ The validation and test results were close, showing that the final model perform
 
 Detailed evaluation results are available in [reports/v1_results.md](reports/v1_results.md).
 
-## Reusable Inference
-
-The fitted preprocessor and LightGBM model are saved in `models/v1/`. The inference code loads both artifacts and predicts the price of one valid vehicle record.
-
-```python
-from src.predict import predict_price
-
-predicted_price = predict_price(vehicle)
-print(f"Predicted listing price: ${predicted_price:,.2f}")
-```
-
-The `vehicle` input is a Python dictionary containing the 21 fields listed in `src/features.py`.
-
-Inference flow:
-
-1. `features.py` validates and orders the vehicle features.
-2. The vehicle is converted into a one-row DataFrame.
-3. The frozen preprocessor transforms the data.
-4. The frozen LightGBM model returns the predicted price.
-
 ## Repository Guide
 
 | Path                    | Purpose                                                                               |
@@ -139,4 +138,4 @@ Large datasets and generated feature matrices are excluded from Git, while the t
 * Expand the supported range toward $2 million.
 * Improve support for simple user inputs and missing information.
 * Add prediction ranges or uncertainty estimates.
-* Build an API and user interface around the inference code.
+* Build a user interface around the deployed prediction API.
